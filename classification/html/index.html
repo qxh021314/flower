@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" href="../../jquery-weui/lib/weui.css">
+		<link rel="stylesheet" href="../../jquery-weui/css/jquery-weui.css">
+		<link rel="stylesheet" href="../css/classification.css">
+		<style>
+			body{
+				margin: 0;
+				padding: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<!--	搜索		-->
+			<div class="weui-search-bar" id="searchBar">
+				<form class="weui-search-bar__form">
+					<div class="weui-search-bar__box">
+						<i class="weui-icon-search"></i>
+						<input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="">
+						<a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+					</div>
+					<label class="weui-search-bar__label" id="searchText">
+						<i class="weui-icon-search"></i>
+						<span>搜索</span>
+					</label>
+				</form>
+				<a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+			</div>
+
+<!--    分类内容			-->
+			<div class="weui-flex">
+				<div class="weui-flex_left">
+					<div :style="styleDataOne" class="placeholder" @click="muiClick('one')">热门推荐</div>
+					<div :style="styleDataTwo" class="placeholder" @click="muiClick('two')">鲜花</div>
+					<div :style="styleDataThree" class="placeholder" @click="muiClick('three')">绿植</div>
+				</div>
+				<div class="weui-flex__item">
+					<div class="placeholder">
+						<div class="flex-container">
+							<div class="flex-item">
+								<div>
+									<img src="../../img/9010731.jpg" alt="">
+								</div>
+								<span>生日祝福</span>
+							</div>
+							<div class="flex-item">
+								<div>
+									<img src="../../img/9010741.jpg" alt="">
+								</div>
+								<span>表白求婚</span>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+<!--			<div class="mui-content">-->
+<!--			    <div class="mui-row">-->
+<!--			        <div class="mui-col-sm-12 mui_click">-->
+<!--			            <li class="mui-table-view-cell title-style" :style="styleDataOne" @click="muiClick('one')">-->
+<!--			                <span>热门推荐</span>-->
+<!--			            </li>-->
+<!--						<li class="mui-table-view-cell title-style" :style="styleDataTwo" @click="muiClick('two')">-->
+<!--						    <span>鲜花</span>-->
+<!--						</li>-->
+<!--						<li class="mui-table-view-cell title-style" :style="styleDataThree" @click="muiClick('three')">-->
+<!--						    <span>绿植</span>-->
+<!--						</li>-->
+<!--			        </div>-->
+
+<!--			        <div class="mui-col-sm-9 mui-content-card">-->
+<!--						<div class="flex-container">-->
+<!--							<div class="flex-item">-->
+<!--								<div>-->
+<!--									<img src="../../img/9010731.jpg" alt="">-->
+<!--								</div>-->
+<!--								<span>生日祝福</span>-->
+<!--							</div>-->
+<!--							<div class="flex-item">-->
+<!--								<div>-->
+<!--									<img src="../../img/9010741.jpg" alt="">-->
+<!--								</div>-->
+<!--								<span>表白求婚</span>-->
+<!--							</div>-->
+<!--							<div class="flex-item">-->
+<!--								<div>-->
+<!--									<img src="../../img/9012440.jpg" alt="">-->
+<!--								</div>-->
+<!--								<span>开业商务</span>-->
+<!--							</div>-->
+<!--							<div class="flex-item">-->
+<!--								<div>-->
+<!--									<img src="../../img/9010731.jpg" alt="">-->
+<!--								</div>-->
+<!--								<span>生日祝福</span>-->
+<!--							</div>-->
+<!--							<div class="flex-item">-->
+<!--								<div>-->
+<!--									<img src="../../img/9010741.jpg" alt="">-->
+<!--								</div>-->
+<!--								<span>表白求婚</span>-->
+<!--							</div>-->
+
+<!--						</div>-->
+<!--			        </div>-->
+<!--			    </div>-->
+<!--			</div>-->
+		</div>
+	</body>
+	<script type="text/javascript" src="../../js/jquery-3.2.1.min.js"></script>
+	<script src="../../jquery-weui/js/jquery-weui.js"></script>
+	<script src="../../js/vue.min.js"></script>
+	<script src="../js/classification.js"></script>
+</html>

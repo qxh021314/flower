@@ -1,0 +1,43 @@
+.margin_item{
+	padding: .2rem .3rem .2rem .3rem;
+    height: auto;
+    background-color: white;
+}
+#app{
+	position: absolute;
+	background-color: #efeff4;
+	/* margin-bottom: 3rem; */
+}
+.detail_info{
+    height: 2rem;
+    overflow-y: auto;
+    background-color: white;
+    font-size: .6rem;
+    /*border-bottom: 1px solid #e9e9e9;*/
+}
+
+.detail_info div:first-child{
+    float: left;
+    width: 10%;
+    margin:.1rem .5rem;
+}
+.detail_info div:last-child{
+    float: left;
+    width: 80%;
+}
+.weui-btn_primary{
+    background-color: #3d4d42;
+}
+.weui-btn{
+    border-radius: 0;
+}
+.modal .weui-cells{
+    text-align: left;
+    font-size: 14px!important;
+}
+.modal .weui-cell{
+    padding: 5px 2px;
+}
+.modal .weui-label {
+    width: 70px;
+}

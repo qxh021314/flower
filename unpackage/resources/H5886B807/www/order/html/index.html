@@ -1,0 +1,226 @@
+<!doctype html>
+<html>
+<head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport"
+              content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+        <title>订单</title>
+        <link rel="stylesheet" href="../../jquery-weui/lib/weui.css">
+        <link rel="stylesheet" href="../../jquery-weui/css/jquery-weui.css">
+        <link rel="stylesheet" href="../css/index.css">
+        <style>
+            [v-cloak] {
+                display: none;
+            }
+
+            body {
+                height: 100%;
+            }
+
+            #fh {
+                width: 100%;
+                background-color: white;
+                height: 2rem;
+                line-height: 2rem;
+            }
+
+            #back {
+                width: 1rem;
+                height: .5rem;
+                float: left;
+                padding: .7rem .5rem;
+                transform: rotate(90deg);
+            }
+
+            .weui-cell__bd {
+                border-bottom: 1px solid #e2e2e2;
+            }
+        </style>
+    </head>
+<body>
+<div id="app">
+    <div id="fh">
+        <img id="back" src="../../img/down-menus.png"/>
+        <span>我的订单</span>
+    </div>
+    <!-- 选择花商品 -->
+    <div class="weui-cell weui-cell_swiped" id="swipe1">
+
+        <div class="weui-cell__bd" v-for="(item,index) in dataList" :key="index">
+            <div class="weui-cell">
+                <div class="flower_content mui-card">
+                    <div class="flex-item_new flex-content-left">
+                        <img :src="'http://182.92.195.8:8800/file/getImage?path=' + encodeURI(item.flowerEntities[0].fImg)"/>
+                    </div>
+                    <div class="flex-content-right">
+                        <p><span>{{item.flowerEntities[0].fName}}</span></p>
+                        <p style="height:3rem;overflow: auto">{{item.flowerEntities[0].fDesc}}</p>
+                        <div class="weui-cell__ft" style="text-align: left;margin: .3rem 0 .6rem 0">
+                            <span>数量：</span>
+                            <div class="weui-count">
+                                <a class="weui-count__btn weui-count__decrease"></a>
+                                <input class="weui-count__number" type="number" :value="item.oNum" disabled/>
+                                <a class="weui-count__btn weui-count__increase"></a>
+                            </div>
+                        </div>
+                        <div style="float: left;">
+                            <div class="flex-price">
+                                <span style="color: #ef5e0d;">￥{{item.flowerEntities[0].fPrice}}</span>
+                                <del style="font-size: .4rem">￥{{parseInt(item.flowerEntities[0].fPrice) + 99}}</del>
+                                <div class="button_sp_area" style="float: right;margin-left: .3rem">
+                                    <a href="javascript:;" style="font-size: .4rem;"
+                                       class="weui-btn weui-btn_mini weui-btn_warn" @click="delOrder(item)">删除</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-cell" style="font-size: .5rem">
+                <span>花的编号：{{item.flowerEntities[0].fNum}}</span>&nbsp;&nbsp;<span style="float: right">下单时间：{{item.oTime}}</span>
+            </div>
+            <div class="weui-cell" style="font-size: .5rem">
+                <span>联系人：{{item.oName}}</span>&nbsp;&nbsp;<span>联系电话：{{item.oPhone}}</span>
+            </div>
+            <div class="weui-cell" style="font-size: .5rem">
+                <span>配送地址：{{item.oAddr}}</span>
+            </div>
+        </div>
+        <div class="weui-cell__ft">
+            <a class="weui-swiped-btn weui-swiped-btn_warn delete-swipeout" style="text-align: center;line-height: 7rem"
+               href="javascript:">
+                删除
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../js/jquery-3.2.1.min.js"></script>
+<script src="../../js/vue.min.js"></script>
+<script src="../../jquery-weui/js/jquery-weui.js"></script>
+<script src="../../js/common.js"></script>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            dataList: [],
+            form: {
+                pageIndex: 1,
+                pageSize: 500,
+                uId: '',
+                oStatus: '1'
+            }
+        },
+        created() {
+            this.form.uId = sessionStorage.getItem('uId')
+            console.log(this.form.uId)
+            if (this.form.uId === '' || this.form.uId === null) {
+                $("#swipe1").hide()
+                $.alert("您未登录即将跳转至登录页面！", function () {
+                    window.location.href = '../../login.html'
+                });
+            } else {
+                this.getChartList()
+            }
+        },
+        methods: {
+            // 获取购物车数据
+            getChartList() {
+                let this_ = this
+                $.showLoading();
+                $.ajax({
+                    type: "post",
+                    url: comUrl + "/order/getOrderList",
+                    contentType: 'application/json',
+                    data: JSON.stringify(this_.form),
+                    success: function success(json) {
+                        if (json && json.code === '200') {
+                            this_.dataList = json.data.records
+                            // $.toast(json.msg, 'text');
+                        } else {
+                            this_.dataList = []
+                            $('#swipe1').hide()
+                            $.alert(json.msg, function () {
+                            });
+                        }
+                        setTimeout(function () {
+                            $.hideLoading();
+                        }, 1500)
+                    },
+                    error: function error() {
+                        $.hideLoading();
+                        $.toast("网络请求失败", 'text');
+                    },
+                    complete: function complete(XMLHttpRequest, status) {
+                        //请求完成后最终执行参数
+                        if (status === 'timeout') {
+                            $.hideLoading();
+                            $.toast("请求超时", 'text');
+                        }
+                    }
+                });
+            },
+            // 删除订单
+            delOrder(item) {
+                let this_ = this
+                $.confirm("确定删除该订单？", function () {
+                    //点击确认后的回调函数
+                    let ids = []
+                    ids.push(item.oId)
+                    $.showLoading();
+                    $.ajax({
+                        type: "post",
+                        url: comUrl + "/order/deleteOrder",
+                        contentType: 'application/json',
+                        data: JSON.stringify(ids),
+                        success: function success(json) {
+                            if (json && json.code === '200') {
+                                $.toptip(json.msg, 'success');
+                            } else {
+                                $.toptip(json.msg, 'error');
+                            }
+                            this_.getChartList()
+                            setTimeout(function () {
+                                $.hideLoading();
+                            }, 1500)
+                        },
+                        error: function error() {
+                            $.hideLoading();
+                            $.toast("网络请求失败", 'text');
+                        },
+                        complete: function complete(XMLHttpRequest, status) {
+                            //请求完成后最终执行参数
+                            if (status === 'timeout') {
+                                $.hideLoading();
+                                $.toast("请求超时", 'text');
+                            }
+                        }
+                    });
+                }, function () {
+                    //点击取消后的回调函数
+                });
+            }
+        }
+    })
+
+    $('#back').on("click", function () {
+        window.history.back()
+    })
+
+    var MAX = 99, MIN = 1;
+    $('.weui-count__decrease').click(function (e) {
+        var $input = $(e.currentTarget).parent().find('.weui-count__number');
+        var number = parseInt($input.val() || "0") - 1
+        if (number < MIN) number = MIN;
+        $input.val(number)
+    })
+    $('.weui-count__increase').click(function (e) {
+        var $input = $(e.currentTarget).parent().find('.weui-count__number');
+        var number = parseInt($input.val() || "0") + 1
+        if (number > MAX) number = MAX;
+        $input.val(number)
+    })
+</script>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title></title>
+    <link rel="stylesheet" href="./jquery-weui/lib/weui.css">
+    <link rel="stylesheet" href="./jquery-weui/css/jquery-weui.css">
+    <link rel="stylesheet" href="css/index.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        body{
+            margin: 0;
+            padding: 0;
+        }
+
+    </style>
+</head>
+<body>
+	<div id="app">
+		<!-- foot -->
+        <div class="weui-tab">
+            <div class="weui-tab__bd">
+                <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active margin_item_bottom">
+                     <iframe src="home/html/index.html" width="100%" height="100%" frameborder="0/0"></iframe>
+                </div>
+                <div id="tab3" class="weui-tab__bd-item">
+                    <iframe src="chart/html/index.html" width="100%" height="100%" frameborder="0/0"></iframe>
+                </div>
+                <div id="tab4" class="weui-tab__bd-item">
+                    <iframe src="persent/html/index.html" width="100%" height="100%" frameborder="0/0"></iframe>
+                </div>
+            </div>
+            <div class="weui-tabbar">
+                <a href="#tab1" class="weui-tabbar__item weui-bar__item--on">
+                    <div class="weui-tabbar__icon">
+                        <img src="./images/icon_nav_button.png" alt="">
+                    </div>
+                    <p class="weui-tabbar__label">首页</p>
+                </a>
+                <a href="#tab3" class="weui-tabbar__item">
+<!--                    <span class="weui-badge" style="position: absolute;top: -.4em;right: 1.2em;">8</span>-->
+                    <div class="weui-tabbar__icon">
+                        <img src="./images/icon_nav_article.png" alt="">
+                    </div>
+                    <p class="weui-tabbar__label">购物车</p>
+                </a>
+                <a href="#tab4" class="weui-tabbar__item">
+                    <div class="weui-tabbar__icon">
+                        <img src="./images/icon_nav_cell.png" alt="">
+                    </div>
+                    <p class="weui-tabbar__label">个人中心</p>
+                </a>
+            </div>
+        </div>
+	</div>
+</body>
+<script src="./jquery-weui/lib/jquery-2.1.4.js"></script>
+<script src="./jquery-weui/js/jquery-weui.js"></script>
+<script>
+
+</script>
+</html>

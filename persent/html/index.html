@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport"
+              content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+        <title>个人中心</title>
+        <link rel="stylesheet" href="../../jquery-weui/lib/weui.css">
+        <link rel="stylesheet" href="../../jquery-weui/css/jquery-weui.css">
+        <link rel="stylesheet" href="../css/index.css">
+        <style>
+            body {
+                height: 100%;
+            }
+        </style>
+    </head>
+    <script src="../../js/common.js"></script>
+<body>
+<div id="app">
+    <!-- header -->
+    <div class="header">
+        <img src="../../images/timg.jfif" alt="">
+        <div class="loginOrRegister">
+
+            <!--            <div>-->
+            <!--                <img style="width: 3.5rem;height: 3.5rem" src="../../images/swiper-1.jpg" alt="">-->
+            <!--                <p>wdd</p>-->
+            <!--            </div>-->
+            <div class="button_sp_area">
+                <div style="top:1.5rem;font-size: 1rem" v-if="userData !== '' && userData !== null">
+                    <p>欢迎回来！</p>
+                    <p>{{userData.uName}}</p>
+                </div>
+                <a v-else href="javascript:;" style="font-size: .8rem;top:1.5rem"
+                   class="weui-btn weui-btn_mini weui-btn_default" @click="toLogin()">登录/注册</a>
+            </div>
+        </div>
+        <div class="header_content">
+            <div class="gn_mk"><span>个人中心</span></div>
+            <div class="flex-container">
+                <div class="flex-item">
+                    <div @click="myOrder()">
+                        <img src="../../images/order.jpg" alt="">
+                    </div>
+                    <span>我的订单</span>
+                </div>
+                <div class="flex-item">
+                    <div>
+                        <img src="../../images/shezhi.jfif" alt="" @click="showModal()">
+                    </div>
+                    <span>修改个人信息</span>
+                </div>
+            </div>
+            <div style="text-align: center;margin-top: 1rem"><span>更多功能敬请期待!</span></div>
+        </div>
+    </div>
+    <div class="modal" v-if="isShow" v-if="userData !== '' && userData !== null">
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">用户名</label></div>
+                <div class="weui-cell__bd">
+                    <input id="userName" class="weui-input" type="text" placeholder="请输入用户名" v-model="userData.uName">
+                </div>
+            </div>
+        </div>
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">密码</label></div>
+                <div class="weui-cell__bd">
+                    <input id="password" class="weui-input" type="password" placeholder="请输入密码"  v-model="userData.uPassword">
+                </div>
+            </div>
+        </div>
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">邮箱</label></div>
+                <div class="weui-cell__bd">
+                    <input id="eMail" class="weui-input" type="email" placeholder="请输入邮箱" v-model="userData.uMail">
+                </div>
+            </div>
+        </div>
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">号码</label></div>
+                <div class="weui-cell__bd">
+                    <input id="phone" class="weui-input" type="tel" placeholder="请输入号码"  v-model="userData.uPhone">
+                </div>
+            </div>
+        </div>
+        <div class="weui-cells">
+            <div class="weui-cell" style="text-align: center">
+                <a href="javascript:;" style="position:relative;font-size: .4rem;"
+                   class="weui-btn weui-btn_mini weui-btn_default" @click="isShow = false">关闭</a>
+                <a href="javascript:;" style="font-size: .4rem;"
+                   class="weui-btn weui-btn_mini weui-btn_primary" @click="updateUser()">确定</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../js/jquery-3.2.1.min.js"></script>
+<script src="../../js/vue.min.js"></script>
+<script src="../../jquery-weui/js/jquery-weui.js"></script>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            userData: '',
+            isShow: false
+        },
+        created() {
+            this.userData = JSON.parse(sessionStorage.getItem("userData"))
+            console.log(this.userData)
+        },
+        methods: {
+            toLogin() {
+                window.parent.location.href = '../../login.html'
+            },
+            myOrder() {
+                window.parent.location.href = '../../order/html/index.html'
+            },
+            showModal() {
+                this.isShow = true
+            },
+            updateUser() {
+                let this_ = this
+                let form = JSON.parse(JSON.stringify(this_.userData))
+                // this_.isLoading = true
+                $.ajax({
+                    type: "post",
+                    url: comUrl + "/user/updateUserInfo",
+                    contentType: 'application/json',
+                    data: JSON.stringify(form),
+                    success: function success(json) {
+                        console.log(json)
+                        if (json && json.code === '200') {
+                            $.toast(json.msg, 'text')
+                            sessionStorage.setItem("userData", JSON.stringify(json.data))
+                        } else {
+                            $.toast(json.msg, 'text')
+                        }
+                        this_.isShow = false
+                    }
+                });
+            }
+        }
+    })
+
+</script>
+</html>

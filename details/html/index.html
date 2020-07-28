@@ -1,0 +1,305 @@
+<!doctype html>
+<html>
+<head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport"
+              content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+        <title>详情</title>
+        <link rel="stylesheet" href="../../jquery-weui/lib/weui.css">
+        <link rel="stylesheet" href="../../jquery-weui/css/jquery-weui.css">
+        <link rel="stylesheet" href="../css/index.css">
+        <style>
+            [v-cloak] {
+                display: none;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            #app {
+                position: absolute;
+                height: 100%;
+                width: 100%;
+            }
+
+            .swiper-container {
+                width: 100%;
+            }
+
+            .swiper-slide {
+                height: 10rem;
+            }
+
+            .swiper-container img {
+                display: block;
+                width: 100%;
+            }
+            #fh{
+                width: 100%;
+                background-color: white;
+                height: 2rem;
+                line-height: 2rem;
+            }
+            #back{
+                width: 1rem;
+                height: .5rem;
+                float: left;
+                padding: .7rem .5rem;
+                transform: rotate(90deg);
+            }
+        </style>
+    </head>
+<body>
+<div id="app">
+    <div class="weui-tab">
+        <!-- 轮播图 -->
+        <div class="swiper-container swiper-top">
+            <div id="fh">
+                <img id="back" src="../../img/down-menus.png"/>
+                <span>详情页</span>
+            </div>
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+                <div class="swiper-slide">
+                    <img style="height:10rem" :src="'http://182.92.195.8:8800/file/getImage?path=' + encodeURI(detailsData.fImg)"/>
+                </div>
+            </div>
+            <div class="swiper-pagination swiper-p2" monitor_name='菜单轮播按钮'></div>
+            <!-- If we need pagination -->
+        </div>
+        <!-- 商品信息 -->
+        <div class="info margin_item">
+            <p>
+                <span style="font-size: .6rem;color: red">{{detailsData.fName}}</span>
+                <span style="font-size: .6rem">{{detailsData.fDesc}}</span>
+            </p>
+            <p>
+                <span style="color: #ef5e0d;margin-left: .3rem;float: right;font-size: .6rem">经典爆款</span>
+            </p>
+            <br>
+            <div>
+                <span style="color: #ef5e0d;margin-left: .3rem;">￥{{detailsData.fPrice}}</span>
+                <del style="font-size: .4rem">￥{{parseInt(detailsData.fPrice) + 99}}</del>
+                <span style="float: right;font-size: .6rem">已销售{{detailsData.orderNum}}件</span>
+            </div>
+        </div>
+        <!-- 商品材料，花语deng -->
+        <div class="info margin_item" style="margin-top: .5rem">
+            <div class="detail_info">
+                <div>
+                    <span>花语</span>
+                </div>
+                <div>
+                    <span>{{detailsData.flowerSkuEntity.flowerSpuEntity.pContent}}</span>
+                </div>
+            </div>
+            <div class="detail_info">
+                <div>
+                    <span>材料</span>
+                </div>
+                <div>
+                    <span style="">{{detailsData.flowerSkuEntity.sMaterial}}</span>
+                </div>
+            </div>
+            <div class="detail_info">
+                <div style="width: 20%">
+                    <span>配送地址</span>
+                </div>
+                <div style="width: 70%">
+                    <p style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{form.oAddr}}</p>
+                    <i class="weui-icon-download"
+                       style="color:#1E9FFF;float: right;height: 2rem;width: 1rem;text-align: center"
+                       id="show-Info"></i>
+                    <!--                    <span style="float: right;height: 2rem;width: 1rem;text-align: center" id="show-Info">+</span>-->
+                </div>
+            </div>
+            <div class="detail_info">
+                <div>
+                    <span>数量</span>
+                </div>
+                <div class="weui-count" style="text-align: right">
+                    <a class="weui-count__btn weui-count__decrease"></a>
+                    <input class="weui-count__number" id="inNum" v-model="form.oNum" type="number" value="1" disabled/>
+                    <a class="weui-count__btn weui-count__increase"></a>
+                </div>
+            </div>
+        </div>
+        <!-- foot -->
+        <div class="weui-tabbar">
+            <a class="weui-tabbar__item weui-bar__item--on">
+                <div class="weui-tabbar__icon" @click="toHref()">
+                    <img style="width: 1.3rem;height: 1.3rem" src="../../img/order.jpg" alt="">
+                </div>
+                <p class="weui-tabbar__label" style="color: #999999">购物车</p>
+            </a>
+            <div class="button_sp_area">
+                <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" @click="addOrder('0')">加入购物</a>
+                <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn" @click="addOrder('1')">立即购买</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../js/jquery-3.2.1.min.js"></script>
+<script src="../../js/vue.min.js"></script>
+<script type="text/javascript" src="../../jquery-weui/js/jquery-weui.js"></script>
+<script type="text/javascript" src="../../jquery-weui/js/swiper.js"></script>
+<script src="../../js/common.js"></script>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            detailsData: '',
+            addr: '',
+            formList: [],
+            form: {
+                oId: '',
+                fId: '',
+                uId: '',
+                oStatus: '',
+                oTime: '',
+                oRemark: '',
+                oNum: 1,
+                oAddr: '',
+                oName: '',
+                oPhone: ''
+            }
+        },
+        created() {
+            this.detailsData = JSON.parse(sessionStorage.getItem("detailsData"))
+            this.form.uId = sessionStorage.getItem("uId")
+            this.form.fId = this.detailsData.fId
+            console.log(this.form)
+            console.log(JSON.parse(sessionStorage.getItem("userData")))
+        },
+        methods: {
+            // 跳转购物车
+            toHref() {
+                window.location.href = '../../chart/html/index.html'
+            },
+            // 加购物车/订单
+            addOrder(status) {
+                if (this.form.uId === null || this.form.uId === '') {
+                    $.alert('请先登录才可进行加入购物车或购买！',function () {
+                        window.location.href = '../../login.html'
+                    })
+                    return
+                }
+                if (this.form.oAddr === '') {
+                    $.alert('请输入配送地址！')
+                    return
+                }
+                if (this.form.oPhone === '' || this.form.oName === '') {
+                    $.alert('请输入联系人姓名和号码！')
+                    return
+                }
+                this.form.oNum = $('#inNum').val()
+                let this_ = this
+                this_.form.oStatus = status
+                this_.formList = []
+                this_.formList.push(JSON.parse(JSON.stringify(this_.form)))
+                $.showLoading();
+                // this_.isLoading = true
+                $.ajax({
+                    type: "post",
+                    url: comUrl + "/order/insertBatch",
+                    contentType: 'application/json',
+                    data: JSON.stringify(this_.formList),
+                    success: function success(json) {
+                        if (json && json.code === '200') {
+                            $.toptip(json.msg, 'success');
+                        } else {
+                            $.toptip(json.msg, 'error');
+                        }
+                        $.hideLoading();
+                    },
+                    error: function error() {
+                        $.hideLoading();
+                        $.toast("网络请求失败", 'text');
+                    },
+                    complete: function complete(XMLHttpRequest, status) {
+                        //请求完成后最终执行参数
+                        if (status === 'timeout') {
+                            $.hideLoading();
+                            $.toast("请求超时", 'text');
+                        }
+                    }
+                });
+            }
+        }
+    })
+
+    $('#back').on("click", function () {
+        window.history.back()
+    })
+
+    var item = '        <div class="modal">\n' +
+        '            <div class="weui-cells">\n' +
+        '                <div class="weui-cell">\n' +
+        '                    <div class="weui-cell__hd"><label class="weui-label">地址</label></div>\n' +
+        '                    <div class="weui-cell__bd">\n' +
+        '                        <input id="addrIn" class="weui-input" type="text" placeholder="请输入地址">\n' +
+        '                    </div>\n' +
+        '                </div>\n' +
+        '            </div>\n' +
+        '            <div class="weui-cells">\n' +
+        '                <div class="weui-cell">\n' +
+        '                    <div class="weui-cell__hd"><label class="weui-label">联系人</label></div>\n' +
+        '                    <div class="weui-cell__bd">\n' +
+        '                        <input  id="nameIn" class="weui-input" type="text" placeholder="请输入联系人">\n' +
+        '                    </div>\n' +
+        '                </div>\n' +
+        '            </div>\n' +
+        '            <div class="weui-cells">\n' +
+        '                <div class="weui-cell">\n' +
+        '                    <div class="weui-cell__hd"><label class="weui-label">联系电话</label></div>\n' +
+        '                    <div class="weui-cell__bd">\n' +
+        '                        <input id="phoneIn" class="weui-input" type="text" placeholder="请输入电话">\n' +
+        '                    </div>\n' +
+        '                </div>\n' +
+        '            </div>\n' +
+        '            <div class="weui-cells weui-cells_form">\n' +
+        '                <div class="weui-cell">\n' +
+        '                    <div class="weui-cell__bd">\n' +
+        '                        <textarea id="remarkIn" class="weui-textarea" placeholder="请输入备注信息" rows="2"></textarea>\n' +
+        '                        <div class="weui-textarea-counter"><span>0</span>/200</div>\n' +
+        '                    </div>\n' +
+        '                </div>\n' +
+        '            </div>\n' +
+        '        </div>\n'
+    $(document).on("click", "#show-Info", function () {
+        // $('#addrIn').val('qw')
+        $.modal({
+            title: "填写用户信息",
+            text: item,
+            buttons: [
+                {text: "取消", className: "default"},
+                {
+                    text: "确定", onClick: function (val) {
+                        vm.$data.form.oAddr = $('#addrIn').val()
+                        vm.$data.form.oName = $('#nameIn').val()
+                        vm.$data.form.oPhone = $('#phoneIn').val()
+                        console.log(val)
+                    }
+                },
+            ]
+        });
+    })
+    var MAX = 99, MIN = 1;
+    $('.weui-count__decrease').click(function (e) {
+        var $input = $(e.currentTarget).parent().find('.weui-count__number');
+        var number = parseInt($input.val() || "0") - 1
+        if (number < MIN) number = MIN;
+        $input.val(number)
+    })
+    $('.weui-count__increase').click(function (e) {
+        var $input = $(e.currentTarget).parent().find('.weui-count__number');
+        var number = parseInt($input.val() || "0") + 1
+        if (number > MAX) number = MAX;
+        $input.val(number)
+    })
+</script>
+</html>

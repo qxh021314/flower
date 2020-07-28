@@ -1,0 +1,72 @@
+#app{
+	position: absolute;
+	height: 100%;
+}
+.flex-container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-align-content: center;
+    align-content: center;
+    margin-bottom: 10px;
+    height: auto;
+	border-bottom: 1px solid #e0e0e0;
+    background-color: #ffffff;
+}
+
+.flex-item {
+    font-size: .4rem;
+    text-align: center;
+    background-color: #efeff4;
+    width: 28.5%;
+    height: auto;
+    margin: 5px;
+}
+.flex-item img{
+    width: 100%;
+    height: 100%;
+}
+.mui-content{
+    background-color: white;
+    height: 100%;
+    width: 100%;
+}
+.mui_click{
+    /*position: absolute;*/
+    height: 100%;
+    width: 30%;
+    font-size: .9rem;
+    border-right: 1px solid #e3e3e3;
+}
+.mui-row{
+    height: 100%;
+}
+.title-style{
+    list-style: none;
+    text-align: center;
+    margin: .6rem .2rem
+}
+.mui-content-card{
+    height: 100%;
+    width: 70%;
+}
+.weui-flex{
+    height: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    /*background-color: white;*/
+}
+.weui-flex_left{
+    text-align: center;
+    width: 4rem;
+    height: 100%;
+    border-right: 1px solid #d2d2d2;
+    background-color: white;
+}
+.weui-flex_left .placeholder{
+    padding: 1.5rem 0 .5rem 0;
+}
+.weui-flex__item{
+    background-color: white;
+}

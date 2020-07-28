@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport"
+              content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+        <title>鲜花</title>
+        <link rel="stylesheet" href="../../jquery-weui/lib/weui.css">
+        <link rel="stylesheet" href="../../jquery-weui/css/jquery-weui.css">
+        <link rel="stylesheet" href="../css/index.css">
+        <style>
+            body {
+                height: 100%;
+            }
+            #fh{
+                width: 100%;
+                background-color: white;
+                height: 2rem;
+                line-height: 2rem;
+            }
+            #back{
+                width: 1rem;
+                height: .5rem;
+                float: left;
+                padding: .7rem .5rem;
+                transform: rotate(90deg);
+            }
+        </style>
+    </head>
+
+<body>
+<div id="app">
+    <!--  -->
+    <div class="weui-tab">
+        <div id="fh">
+            <img id="back" src="../../img/down-menus.png"/>
+            <span>搜索</span>
+        </div>
+        <!--	搜索		-->
+        <div class="weui-search-bar" id="searchBar">
+            <form class="weui-search-bar__form">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" id="searchInput" v-model="form.fDesc"
+                           placeholder="搜索" required="">
+                    <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+                </div>
+                <label class="weui-search-bar__label" id="searchText">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span>
+                </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel" @click="getFlowerList()">确定</a>
+        </div>
+
+        <div class="weui-tab__bd">
+            <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
+                <div class="flex-container">
+                    <div class="flex-item" v-for="(item,index) in detailsData.data" :key="index">
+                        <div @click="toDetails(item)">
+                            <img :src="'http://182.92.195.8:8800/file/getImage?path=' + encodeURI(item.fImg)"/>
+                        </div>
+                        <p style="text-overflow:clip">{{item.fName}}</p>
+                        <span style="text-overflow:clip">{{item.fDesc}}{{item.fDesc}}</span>
+                        <p>￥{{item.fPrice}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../js/jquery-3.2.1.min.js"></script>
+<script src="../../jquery-weui/js/jquery-weui.js"></script>
+<script src="../../js/vue.min.js"></script>
+<script src="../js/index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            form: {
+                pageIndex: 1,
+                pageSize: 100,
+                fDesc: ''
+            },
+            detailsData: ''
+        },
+        mounted() {
+           this.detailsData = JSON.parse(sessionStorage.getItem("sinData"))
+            console.log(this.detailsData)
+        },
+        methods: {
+            // 获取花的信息
+            getFlowerList() {
+                let this_ = this
+                // this_.isLoading = true
+                $.ajax({
+                    type: "post",
+                    url: comUrl + "/flower/getFlowerList",
+                    contentType: 'application/json',
+                    data: JSON.stringify(this_.form),
+                    success: function success(json) {
+                        if (json && json.code === '200') {
+                            let sinData = {
+                                name: '搜索查询',
+                                data: ''
+                            }
+                            sinData.data = json.data.records
+                            this_.detailsData = sinData
+
+                        } else {
+                            this_.detailsData = ''
+                        }
+                    }
+                });
+            },
+            // 详情
+            toDetails(item) {
+                sessionStorage.setItem("detailsData", JSON.stringify(item))
+                console.log('---')
+                window.parent.location.href = '../../details/html/index.html'
+            },
+        }
+    })
+    $('#back').on("click", function () {
+        window.history.back()
+    })
+</script>
+</html>

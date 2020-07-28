@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>登录</title>
+    <link rel="stylesheet" href="./jquery-weui/lib/weui.css">
+    <link rel="stylesheet" href="./jquery-weui/css/jquery-weui.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #app{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url("./images/login_title.jpg");
+        }
+        .weui-cell__hd{
+            width: 3rem;
+        }
+        .code_input{
+            width: 90%;
+        }
+        .login_content {
+            background-color: white;
+            margin: 0 .6rem 0 .6rem;
+            padding-bottom: 1rem;
+            transform: translate(0%, 10%);
+        }
+
+        .login {
+            margin: 3rem .6rem 1rem .6rem;
+        }
+        .login_title{
+            height: 5rem;
+            line-height: 5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            color: #148413;
+            font-weight: bolder;
+        }
+    </style>
+</head>
+<body>
+<div id="app" v-cloak>
+    <div class="login_title">
+        LOGIN
+    </div>
+    <div class="login_content">
+        <div class="weui-cells weui-cells_form">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请输入姓名" v-model="form.uName">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">手机号</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="tel" placeholder="请输入手机号" v-model="form.uPhone">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">密码</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请输入密码" v-model="form.uPassword">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">验证码</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input code_input" placeholder="请输入验证码" v-model="form.signCode">
+                </div>
+                <img src="http://182.92.195.8:8800/file/getVertifyCode" id="imageCode" alt="" @click="updateCode()">
+            </div>
+        </div>
+        <a href="javascript:;" class="weui-btn weui-btn_primary login" @click="login()">登录</a>
+        <p style="text-align: center;color: #1aad19" @click="toRegister()">没有账号? 去注册</p>
+    </div>
+</div>
+</body>
+<script src="./jquery-weui/lib/jquery-2.1.4.js"></script>
+<script src="./jquery-weui/js/jquery-weui.js"></script>
+<script src="js/vue.min.js"></script>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            codeUrl: '',
+            form: {
+                uPassword: '',
+                uName: '',
+                uMail: '',
+                uPhone: '',
+                signCode: ''
+            }
+        },
+        methods: {
+            updateCode() {
+                document.getElementById("imageCode").src = document.getElementById("imageCode").src + "?nocahe=" + new Date()
+            },
+            toRegister() {
+                window.location.href = "./register.html"
+            },
+            login() {
+                let this_ = this
+                if (this_.form.uName === '') {
+                    $.toast("请输入用户名！", "text");
+                    return
+                }
+                if (this_.form.uPhone === '') {
+                    $.toast("请输入手机号！", "text");
+                    return
+                }
+                if (this_.form.signCode === '') {
+                    $.toast("请输入验证码！", "text");
+                    return
+                }
+                $.showLoading();
+                $.ajax({
+                    type: "post",
+                    url: "http://182.92.195.8:8800/user/login",
+                    contentType: 'application/json',
+                    data: JSON.stringify(this_.form),
+                    success: function success(json) {
+                        if (json && json.code === '200') {
+                            sessionStorage.setItem("uId", JSON.stringify(json.data.uId))
+                            sessionStorage.setItem("userData", JSON.stringify(json.data))
+                            window.location.href = './index.html'
+                        } else {
+                            $.toast(json.msg, 'text');
+                        }
+                        setTimeout(function() {
+                            $.hideLoading();
+                        }, 3000)
+                    },
+                    error: function error() {
+                        $.hideLoading();
+                        $.toast("网络请求失败", 'text');
+                    },
+                    complete: function complete(XMLHttpRequest, status) {
+                        //请求完成后最终执行参数
+                        if (status === 'timeout') {
+                            $.hideLoading();
+                            $.toast("请求超时", 'text');
+                        }
+                    }
+                });
+            }
+        }
+    })
+
+</script>
+</html>

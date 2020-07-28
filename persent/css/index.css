@@ -1,0 +1,76 @@
+.header img{
+    width: 100%;
+    height: 10rem;
+}
+.loginOrRegister{
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 1rem;
+}
+.header_content{
+    margin-top: -4rem;
+    transform: translate(2.5%,0%);
+    width: 95%;
+    height: 10rem;
+    border-radius: .5rem;
+    background-color: #f6f6f6;
+}
+
+.gn_mk{
+    width: 100%;
+    height: 2rem;
+    line-height: 2rem;
+    border-bottom: 1px solid #e2e2e2;
+}
+.gn_mk span{
+    margin-left: .5rem;
+}
+
+.flex-container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-align-content: center;
+    align-content: center;
+    margin-bottom: 10px;
+    height: auto;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #f6f6f6;
+}
+
+.flex-item {
+    font-size: .4rem;
+    text-align: center;
+    width: 28.5%;
+    height: auto;
+    margin: 5px;
+}
+.flex-item img{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.modal{
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    padding: 10px 10px;
+    border: 1px solid #b9b9b9;
+    background-color: #ffffff;
+}
+.modal .weui-cells{
+    text-align: left;
+    font-size: 14px!important;
+}
+.modal .weui-cell{
+    padding: 5px 2px;
+}
+.modal .weui-label {
+    width: 70px;
+}
+.modal .weui-btn{
+    margin-top: 0;
+}

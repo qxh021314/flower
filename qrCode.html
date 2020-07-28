@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <title>二维码</title>
+    <style>
+        .code{
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 100%;
+            height: auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="qrcode" class="code"></div>
+<script src="./js/jquery-3.2.1.min.js"></script>
+<script src="./js/jquery.qrcode.js"></script>
+<script>
+    var qrCodeUrl = 'https://service.dcloud.net.cn/build/download/fa40c210-7aeb-11ea-b80c-835882fcd07f';//二维码跳转链接 生产
+    var littlePic = './img/favicon.jpg';//二维码中心小图片
+    $('#qrcode').qrcode({
+        render: "canvas",
+        text: utf16to8(qrCodeUrl),
+        width: "1024",               //二维码的宽度
+        height: "1024",              //二维码的高度
+        background: "#ffffff",       //二维码的后景色
+        foreground: "#000000",       //二维码的前景色
+        src: littlePic             //二维码中间的图片
+    });
+    function utf16to8(str) {
+        var out, i, len, c;
+        out = "";
+        len = str.length;
+        for (i = 0; i < len; i++) {
+            c = str.charCodeAt(i);
+            if ((c >= 0x0001) && (c <= 0x007F)) {
+                out += str.charAt(i);
+            } else if (c > 0x07FF) {
+                out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));
+                out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F));
+                out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+            } else {
+                out += String.fromCharCode(0xC0 | ((c >> 6) & 0x1F));
+                out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+            }
+        }
+        return out;
+    }
+</script>
+</body>
+</html>

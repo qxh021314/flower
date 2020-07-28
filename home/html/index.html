@@ -1,0 +1,318 @@
+<!doctype html>
+<html>
+<head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport"
+              content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+        <title></title>
+        <link rel="stylesheet" href="../../jquery-weui/lib/weui.css">
+        <link rel="stylesheet" href="../../jquery-weui/css/jquery-weui.css">
+        <link rel="stylesheet" href="../css/home.css">
+        <style>
+            [v-cloak] {
+                display: none;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .swiper-container {
+                width: 100%;
+            }
+
+            .swiper-slide {
+                height: 7rem;
+            }
+
+            .swiper-container img {
+                display: block;
+                width: 100%;
+            }
+
+            .weui-loadmore {
+                position: absolute;
+                background-color: rgba(27, 27, 27, 0.7);
+                font-size: .8rem;
+                color: white;
+                z-index: 9999;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        </style>
+    </head>
+<body>
+<div id="app" v-cloak>
+    <!--	搜索		-->
+    <div class="weui-search-bar" id="searchBar">
+        <form class="weui-search-bar__form">
+            <div class="weui-search-bar__box">
+                <i class="weui-icon-search"></i>
+                <input type="search" class="weui-search-bar__input" id="searchInput" v-model="form.fDesc"
+                       placeholder="搜索" required="">
+                <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+            </div>
+            <label class="weui-search-bar__label" id="searchText">
+                <i class="weui-icon-search"></i>
+                <span>搜索</span>
+            </label>
+        </form>
+        <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel" @click="getFlowerList('search')">确定</a>
+    </div>
+    <!-- 轮播图 -->
+    <div class="swiper-container swiper_top">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper" v-if="swiperWrapperData.length > 0">
+            <!-- Slides -->
+            <!--            <div class="swiper-slide"><img style="height: 7rem" src="../../jquery-weui/demos/images/swiper-1.jpg"/></div>-->
+            <!--            <div class="swiper-slide"><img style="height: 7rem" src="../../jquery-weui/demos/images/swiper-2.jpg"/></div>-->
+            <!--            <div class="swiper-slide"><img style="height: 7rem" src="../../jquery-weui/demos/images/swiper-3.jpg"/></div>-->
+            <!---->
+            <div class="swiper-slide" v-for="(item, index) in swiperWrapperData" :key="index">
+                <img @click="toDetails(item)" style="height: 7rem"
+                     :src="'http://182.92.195.8:8800/file/getImage?path=' + encodeURI(item.fImg)"/>
+            </div>
+        </div>
+        <!-- If we need pagination -->
+        <div class="swiper-pagination" slot="pagination">
+            <!--            <span class="swiper-pagination-bullet swiper-pagination-bullet-active" v-for="(item, index) in swiperWrapperData" :key="index"></span>-->
+        </div>
+    </div>
+    <!--	生日祝福、表白求婚、开业商务、周年纪念		-->
+    <div class="t_content"><span style="margin-left: .5rem">一秒选花</span></div>
+    <div class="swiper-container swiper_bottom">
+        <div class="flex-container" v-if="quicklyData.length > 0">
+            <div class="flex-item" v-for="(item,index) in quicklyData" :key="index" @click="toHref(item)">
+                <span>{{item.name}}</span>
+                <div style="height: 5rem;width: 100%">
+                    <img :src="'http://182.92.195.8:8800/file/getImage?path=' + encodeURI(item.data[0].fImg)" alt="">
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- 销售类型（热销推荐）	 -->
+    <div class="flex-container">
+        <div class="flex-item_new" v-if="hotData.data.length > 0" @click="toHref(hotData)">
+            <div class="flex_left">
+                <span style="font-size: .8rem;font-weight: bolder">热销榜</span>
+                <br>
+                <span>万千宠爱</span>
+                <br>
+                <br>
+                <span class="flex_foot">大家都在买</span>
+            </div>
+            <div class="flex_right">
+                <img :src="'http://182.92.195.8:8800/file/getImage?path=' + encodeURI(hotData.data[0].fImg)" alt="">
+            </div>
+        </div>
+        <div class="flex-item_new" v-if="recommendData.data.length > 0" @click="toHref(recommendData)">
+            <div class="flex_left">
+                <span style="font-size: .8rem;font-weight: bolder">推荐</span>
+                <br>
+                <span>超值好货</span>
+                <br>
+                <br>
+                <span class="flex_foot">你值得拥有</span>
+            </div>
+            <div class="flex_right" v-if="recommendData.data.length > 0">
+                <img :src="'http://182.92.195.8:8800/file/getImage?path=' + encodeURI(recommendData.data[0].fImg)" alt="">
+            </div>
+        </div>
+    </div>
+    <!-- 选择花商品 -->
+    <div class="flower_content mui-card" v-for="(item, index) in tableData" :key="index">
+        <div class="flex-item_new flex-content-left" @click="toDetails(item)">
+            <img :src="'http://182.92.195.8:8800/file/getImage?path=' + encodeURI(item.fImg)" alt="">
+        </div>
+        <div class="flex-content-right">
+            <span>{{item.fName}}</span>
+            <p style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{item.fDesc}}</p>
+            <div class="flex_it">经典爆款</div>
+            <div style="float: left;width: 50%">
+                <div class="flex-price">
+                    <span style="color: #ef5e0d;">￥{{item.fPrice}}</span>
+                    <del style="font-size: .4rem">￥{{parseInt(item.fPrice) + 99}}</del>
+                    <div style="font-size: .6rem"><p>已销售{{item.orderNum}}件</p></div>
+                </div>
+            </div>
+            <div style="float: right;width: 50%;text-align: center;margin-top: .5rem">
+<!--                <img style="width: 1.3rem;height: 1.3rem" src="../../img/order.jpg" alt="" @click="">-->
+            </div>
+        </div>
+    </div>
+    <div class="weui-loadmore" v-show="isLoading">
+        <i class="weui-loading"></i>
+        <span class="weui-loadmore__tips">正在加载</span>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../js/jquery-3.2.1.min.js"></script>
+<script src="../../js/vue.min.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../js/index.js"></script>
+<script src="../../jquery-weui/js/jquery-weui.js"></script>
+<script src="../../jquery-weui/js/swiper.js"></script>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            isLoading: false,
+            url: "http://182.92.195.8:8800/file/multi",
+            form: {
+                pageIndex: 1,
+                pageSize: 100,
+                fStatus: '1',
+                fDesc: ''
+            },
+            swiperWrapperData: [], // 轮播图展示
+            quicklyData: [], // 一秒选择的商品展示
+            hotData: {
+                name: '热销产品',
+                data: []
+            }, // 热销
+            recommendData: {
+                name: '推荐产品',
+                data: []
+            }, // 推荐商品
+            tableData: [] //所有产品的展示
+        },
+        created() {
+            let _this = this;
+            this.getFlowerList()
+            document.onkeydown = function (e) {
+                console.log(e.key)
+                if (e.key === 'Enter') {
+                    console.log('---')
+                    // _this.getFlowerList('search');   // ProjectName 为事件触发的函数
+                }
+            }
+        },
+        methods: {
+            // 获取花的信息
+            getFlowerList(val) {
+                let this_ = this
+                // if (val && val === 'search') {
+                //     this_.form.fDesc = $('#searchInput').val()
+                // }
+                // console.log(this_.form)
+                // this_.isLoading = true
+                $.ajax({
+                    type: "post",
+                    url: comUrl + "/flower/getFlowerList",
+                    contentType: 'application/json',
+                    data: JSON.stringify(this_.form),
+                    success: function success(json) {
+						console.log(json);
+                        if (json && json.code === '200') {
+                            if (val && val === 'search') {
+                                let sinData = {
+                                    name: '搜索查询',
+                                    data: ''
+                                }
+                                sinData.data = json.data.records
+                                sessionStorage.removeItem('sinData')
+                                sessionStorage.setItem('sinData', JSON.stringify(sinData))
+                                window.parent.location.href = '../../other/html/index.html'
+                                return
+                            }
+                            this_.tableData = json.data.records
+                            this_.quicklyData = this_.dataAr(this_.tableData) // 一秒选花的
+                            for (let i = 0; i < this_.tableData.length; i++) {
+                                if (this_.tableData[i].fType === '3') { // 轮播图数据
+                                    this_.swiperWrapperData.push(JSON.parse(JSON.stringify(this_.tableData[i])))
+                                }
+                                if (this_.tableData[i].fType === '2') { // 热销图数据
+                                    this_.hotData.data.push(JSON.parse(JSON.stringify(this_.tableData[i])))
+                                }
+                                if (this_.tableData[i].fType === '1') { // 推荐图数据
+                                    this_.recommendData.data.push(JSON.parse(JSON.stringify(this_.tableData[i])))
+                                }
+                            }
+                        } else {
+                            $.toast(json.msg, 'text')
+                            this_.tableData = []
+                        }
+                        this_.$nextTick(() => {
+                            $(".swiper_top").swiper({
+                                loop: true,
+                                autoplay: 3000
+                            });
+                            // $(".swiper-bottom").swiper({
+                            //     loop: true,
+                            //     observer: true,
+                            //     observeParents: true, //swiper插件因为tab栏切换,导致swiper父元素的变化.从而出现页面不能滚动的问题.
+                            //     /* pagination: {
+                            //        el: '.swiper-pagination',
+                            //     }, */
+                            //     pagination: '.swiper-p2',
+                            //     paginationClickable: true,
+                            // });
+                        })
+                        // this_.isLoading = false
+                    }
+                });
+            },
+            // 数据分组
+            dataAr(arr) {
+                console.log(arr)
+                var map = {}, dest = [];
+                for (var i = 0; i < arr.length; i++) {
+                    var ai = arr[i];
+                    if (!map[ai.flowerSkuEntity.sType]) {
+                        dest.push({
+                            name: ai.flowerSkuEntity.sType,
+                            data: [ai]
+                        });
+                        map[ai.flowerSkuEntity.sType] = ai;
+                    } else {
+                        for (var j = 0; j < dest.length; j++) {
+                            var dj = dest[j];
+                            console.log(dj)
+                            if (dj.name === ai.flowerSkuEntity.sType) {
+                                dj.data.push(ai);
+                                break;
+                            }
+                        }
+                    }
+                }
+                console.log(dest)
+                return dest;
+            },
+
+            // 详情
+            toDetails(item) {
+                sessionStorage.setItem("detailsData", JSON.stringify(item))
+                console.log('---')
+                window.parent.location.href = '../../details/html/index.html'
+            },
+
+            toHref(item) {
+                sessionStorage.setItem("sinData", JSON.stringify(item))
+                console.log('---')
+                window.parent.location.href = '../../other/html/index.html'
+            }
+        }
+    })
+    //
+    // $(".swiper_top").swiper({
+    //     loop: true,
+    //     autoplay: 3000
+    // });
+    //
+    // $(".swiper-container").swiper({
+    //     autoplay: 3000,
+    //     loop: true,
+    //     // observer: true,
+    //     // observeParents: true, //swiper插件因为tab栏切换,导致swiper父元素的变化.从而出现页面不能滚动的问题.
+    //     /* pagination: {
+    //        el: '.swiper-pagination',
+    //     }, */
+    //     pagination: '.swiper-pagination',
+    //     paginationClickable: true,
+    // });
+
+</script>
+</html>
